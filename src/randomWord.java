@@ -1,60 +1,57 @@
-import java.util.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.*;
 import java.util.Scanner;
+
 
 public class randomWord {
     public static final int lives = 5;
 
     public static void main(String[] args) throws FileNotFoundException {
-        manu();
+        choice();
     }
 
-    public static void manu() throws FileNotFoundException {
+    public static void choice() throws FileNotFoundException {
         Scanner sc = new Scanner(System.in);
-        System.out.println("Отвиснем? Напишите 'ДА', чтобы начать, или 'НЕ', чтобы не отвиснуть.");
-        String a = sc.nextLine().toUpperCase();
-        String b = "ДА";
-        String c = "НЕ";
-        if (a.equals(b)) {
-            Game();
-        } else if (a.equals(c)) {
-            System.out.println("BYE-BYE");
-            sc.close();
-        } else {
-            System.out.println("ПИШИ ТО, ЧТО Я УКАЗАЛ!!!");
-            manu();
+        System.out.println("Отвиснем в игре 'Висельница'? Напишите 'ДА', чтобы начать, или 'НЕ', чтобы не отвиснуть.");
+        while(true) {
+            String line = sc.nextLine().toUpperCase();
+            if (line.equals("ДА")) {
+                Game();
+            } else if (line.equals("НЕ")) {
+                System.out.println("BYE-BYE");
+                sc.close();
+                System.exit(0);
+            } else {
+                System.out.println("ПИШИ ТО, ЧТО Я УКАЗАЛ!!! 'ДА' или 'НЕ'");
+            }
         }
 
     }
 
-    public static char letterFromConsole() {
-        char letter;
+    public static char enter() {
         Scanner scan = new Scanner(System.in);
-        System.out.println("Буква");
-        letter = scan.next().toUpperCase().charAt(0);
-        if (!Character.toString(letter).matches("[А-ЯЁ]")) {
-            do {
-                System.out.println("По-русски пиши");
-                letter = scan.next().toUpperCase().charAt(0);
-            } while (!Character.toString(letter).matches("[А-ЯЁ]"));
+        System.out.println("Вводи");
+        String letter = scan.next().toUpperCase().trim();
+        while (!letter.matches("^[А-ЯЁ]$")) {
+            System.out.println("По-русски пиши и по одной букве");
+            letter = scan.next().toUpperCase().trim();
         }
-        return letter;
+        return letter.charAt(0);
     }
 
     public static void Game() throws FileNotFoundException {
         int tries = 0;
-        String sep = File.separator;
-        String path = sep + "C:" + sep + "Users" + sep + "ASUS" + sep + "IdeaProjects" + sep + "test" + sep + "words2";
+        String path = "src/словарь программиста.txt";
         File fr = new File(path);
         Scanner sc = new Scanner(fr);
         String line = sc.nextLine();
         String[] words = line.split(" ");
-        // BLYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAT'
         Random random = new Random();
         int rndIndex = random.nextInt(words.length);
         String rndword = words[rndIndex].toUpperCase();
-        StringBuilder maskedWord = new StringBuilder(rndword.replaceAll(".", "*"));
+        String masked = "*".repeat(rndword.length());
+        StringBuilder maskedWord = new StringBuilder(masked);
         System.out.println(rndword);
         List<Character> usedLetters = new ArrayList<>();
 
@@ -72,98 +69,79 @@ public class randomWord {
                 usedLetters.forEach(System.out::print);
                 System.out.println();
             }
-            letter = letterFromConsole();
+            letter = enter();
             if (usedLetters.contains(letter)) {
-                System.out.println(" поношена(-ы) тобой");
+                System.out.println(" поношена тобой");
                 continue;
             }
             if (rndword.contains(String.valueOf(letter))) {
                 for (int i = 0; i < rndword.length(); i++) {
                     if (letter == rndword.charAt(i)) {
                         maskedWord.setCharAt(i, letter);
+                        System.out.println("\n                          \n");
                     }
                 }
                 if (!String.valueOf(maskedWord).contains("*")) {
                     System.out.println(rndword + "\nНу закончил ты, и что дальше? Поновой");
-                    manu();
-
+                    choice();
 
                 }
             } else {
                 System.out.println("Мимо.Попробуй другую букву.");
                 tries++;
+                grade(tries);
                 if (tries == lives) {
-                    System.out.println("|----------");
-                    System.out.println("|         |");
-                    System.out.println("|        ()");
-                    System.out.println("|        /|) ");
-                    System.out.println("|         |");
-                    System.out.println("|        / ) ");
-                    System.out.println("|");
-                    System.out.println("|");
-                    System.out.println("|");
                     System.out.println("Ну вот и повисели. Неугаданное слово " + rndword);
-                    manu();
+                    choice();
                 }
 
 
-
             }
-            if (tries == 1) {
-                System.out.println("|");
-                System.out.println("|");
-                System.out.println("|");
-                System.out.println("|");
-                System.out.println("|");
-                System.out.println("|");
-                System.out.println("|");
-                System.out.println("|");
-                System.out.println("|");
-            } else if (tries == 2) {
-                System.out.println("|----------");
-                System.out.println("|");
-                System.out.println("|");
-                System.out.println("|");
-                System.out.println("|");
-                System.out.println("|");
-                System.out.println("|");
-                System.out.println("|");
-                System.out.println("|");
-            } else if (tries == 3) {
-                System.out.println("|----------");
-                System.out.println("|         |");
-                System.out.println("|        ()");
-                System.out.println("|        /|) ");
-                System.out.println("|         |");
-                System.out.println("|");
-                System.out.println("|");
-                System.out.println("|");
-                System.out.println("|");
-            } else if (tries == 4) {
-                System.out.println("|----------");
-                System.out.println("|         |");
-                System.out.println("|        ()");
-                System.out.println("|        /|) ");
-                System.out.println("|         |");
-                System.out.println("|        /  ");
-                System.out.println("|");
-                System.out.println("|");
-                System.out.println("|");
-
-            }
-
             usedLetters.add(letter);
 
-
         }
-
-
-
-
     }
-
-
+    public static void grade(int tries){
+        String[] hangmanStages = {"  +---+\n" +
+                "  |   |\n" +
+                "      |\n" +
+                "      |\n" +
+                "      |\n" +
+                "      |\n" +
+                "=========",
+                "  +---+\n" +
+                        "  |   |\n" +
+                        "  O   |\n" +
+                        " /|   |\n" +
+                        "      |\n" +
+                        "      |\n" +
+                        "=========",
+                "  +---+\n" +
+                        "  |   |\n" +
+                        "  O   |\n" +
+                        " /|\\  |\n" +
+                        "      |\n" +
+                        "      |\n" +
+                        "=========",
+                "  +---+\n" +
+                        "  |   |\n" +
+                        "  O   |\n" +
+                        " /|\\  |\n" +
+                        " /    |\n" +
+                        "      |\n" +
+                        "=========",
+                "  +---+\n" +
+                        "  |   |\n" +
+                        "  O   |\n" +
+                        " /|\\  |\n" +
+                        " / \\  |\n" +
+                        "      |\n" +
+                        "========="
+        };
+        System.out.println(hangmanStages[tries-1]);
+    }
 }
+
 
 
 
