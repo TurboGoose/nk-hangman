@@ -3,21 +3,16 @@ import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.Scanner;
 
-
 public class randomWord {
     public static final int lives = 5;
 
     public static void main(String[] args) throws FileNotFoundException {
-        choice();
-    }
-
-    public static void choice() throws FileNotFoundException {
         Scanner sc = new Scanner(System.in);
         System.out.println("Отвиснем в игре 'Висельница'? Напишите 'ДА', чтобы начать, или 'НЕ', чтобы не отвиснуть.");
-        while(true) {
+        while (true) {
             String line = sc.nextLine().toUpperCase();
             if (line.equals("ДА")) {
-                Game();
+                HideWord();
             } else if (line.equals("НЕ")) {
                 System.out.println("BYE-BYE");
                 sc.close();
@@ -26,10 +21,9 @@ public class randomWord {
                 System.out.println("ПИШИ ТО, ЧТО Я УКАЗАЛ!!! 'ДА' или 'НЕ'");
             }
         }
-
     }
 
-    public static char enter() {
+    public static char readLetterFromConsol() {
         Scanner scan = new Scanner(System.in);
         System.out.println("Вводи");
         String letter = scan.next().toUpperCase().trim();
@@ -40,8 +34,7 @@ public class randomWord {
         return letter.charAt(0);
     }
 
-    public static void Game() throws FileNotFoundException {
-        int tries = 0;
+    public static void HideWord() throws FileNotFoundException {
         String path = "src/словарь программиста.txt";
         File fr = new File(path);
         Scanner sc = new Scanner(fr);
@@ -52,26 +45,25 @@ public class randomWord {
         String rndword = words[rndIndex].toUpperCase();
         String masked = "*".repeat(rndword.length());
         StringBuilder maskedWord = new StringBuilder(masked);
-        System.out.println(rndword);
-        List<Character> usedLetters = new ArrayList<>();
+        SeekLetter(rndword, maskedWord);
+    }
 
-
-
-
+    public static void SeekLetter(String rndword, StringBuilder maskedWord){
+        int tries = 0;
         char letter;
+        List<Character> usedLetters = new ArrayList<>();
         while (tries < lives) {
             System.out.println(maskedWord);
             System.out.println();
-
 
             if (!usedLetters.isEmpty()) {
                 System.out.println("Использованные буквы: ");
                 usedLetters.forEach(System.out::print);
                 System.out.println();
             }
-            letter = enter();
+            letter = readLetterFromConsol();
             if (usedLetters.contains(letter)) {
-                System.out.println(" поношена тобой");
+                System.out.println("поношена тобой");
                 continue;
             }
             if (rndword.contains(String.valueOf(letter))) {
@@ -82,26 +74,23 @@ public class randomWord {
                     }
                 }
                 if (!String.valueOf(maskedWord).contains("*")) {
-                    System.out.println(rndword + "\nНу закончил ты, и что дальше? Поновой");
-                    choice();
-
+                    System.out.println(rndword + "\nЭто победа! Играем 'ДА' 'НЕ'?");
+                    return;
                 }
             } else {
                 System.out.println("Мимо.Попробуй другую букву.");
                 tries++;
-                grade(tries);
+                HangmanDrawer(tries);
                 if (tries == lives) {
-                    System.out.println("Ну вот и повисели. Неугаданное слово " + rndword);
-                    choice();
+                    System.out.println("Ну вот и повисели. Неугаданное слово " + rndword + "\nИграем 'ДА' 'НЕ'?");
+                    return;
                 }
-
-
             }
             usedLetters.add(letter);
-
         }
     }
-    public static void grade(int tries){
+
+    public static void HangmanDrawer(int tries){
         String[] hangmanStages = {"  +---+\n" +
                 "  |   |\n" +
                 "      |\n" +
@@ -141,11 +130,3 @@ public class randomWord {
         System.out.println(hangmanStages[tries-1]);
     }
 }
-
-
-
-
-
-
-
-
